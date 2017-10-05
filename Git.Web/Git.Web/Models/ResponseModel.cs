@@ -18,6 +18,11 @@ namespace Git.Web.Models
         [MaxLength(25, ErrorMessage = "Search criteria must between 2 and 25 characters in lenght")]
         public string SearchCriteria { get; set; }
 
-        public List<GitRepository> Repositories { get; set; }
+        public List<GitRepository> Repositories { get; private set; }
+
+        internal void SetResults(List<GitRepository> repositories)
+        {
+            Repositories = repositories;
+        }
     }
 }

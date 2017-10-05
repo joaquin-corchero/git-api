@@ -55,20 +55,6 @@ namespace Git.Tests.Controllers
                 _outputModel = (SearchModel)_viewResult.Model;
             }
 
-            public class And_criteria_is_not_provided : And_searching_repositories
-            {
-                [Fact]
-                public void Empty_response_is_returned()
-                {
-                    _inputModel = new SearchModel();
-
-                    Execute();
-
-                    Assert.Equal(null, _outputModel.SearchCriteria);
-                    Assert.False(_outputModel.Repositories.Any());
-                }
-            }
-
             public class And_the_model_is_invalid : And_searching_repositories
             {
                 public And_the_model_is_invalid()
@@ -118,7 +104,6 @@ namespace Git.Tests.Controllers
                     _gitClient.Setup(c => c.Search(_inputModel.SearchCriteria)).Returns(_gitRepos);
                 }
 
-
                 [Fact]
                 public void The_git_client_search_is_executed()
                 {
@@ -136,7 +121,7 @@ namespace Git.Tests.Controllers
 
                     Execute();
 
-                    Assert.Equal(_gitRepos, _outputModel.Repositories)
+                    Assert.Equal(_gitRepos, _outputModel.Repositories);
                 }
             }
         }
