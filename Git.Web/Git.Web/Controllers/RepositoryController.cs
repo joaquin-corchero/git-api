@@ -28,6 +28,8 @@ namespace Git.Web.Controllers
             if(!ModelState.IsValid)
                 return View(nameof(Index), inputModel);
 
+            _gitClient.Search(inputModel.SearchCriteria);
+
             return View(nameof(Index), inputModel);
         }
     }

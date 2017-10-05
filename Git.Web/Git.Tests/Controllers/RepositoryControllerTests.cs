@@ -67,16 +67,6 @@ namespace Git.Tests.Controllers
                     Assert.Equal(null, _outputModel.SearchCriteria);
                     Assert.False(_outputModel.Repositories.Any());
                 }
-
-                [Fact]
-                public void No_request_is_made_to_the_git_client()
-                {
-                    _inputModel = new SearchModel();
-
-                    Execute();
-
-                    _gitClient.Verify(c => c.Search(It.IsAny<string>()), Times.Never);
-                }
             }
 
             public class And_the_model_is_invalid : And_searching_repositories
@@ -111,6 +101,10 @@ namespace Git.Tests.Controllers
                 public And_the_model_is_valid()
                 {
                     _inputModel = new SearchModel { SearchCriteria = "something to search" };
+                }
+
+                void SetupGitClient()
+                {
                     _gitRepos = new List<GitRepository> {
                         new GitRepository{
                             OwnerName = "Owner 1",
@@ -120,14 +114,29 @@ namespace Git.Tests.Controllers
                             LastPushDate  = DateTime.Now.AddDays(-1)
                         }
                     };
+
+                    _gitClient.Setup(c => c.Search(_inputModel.SearchCriteria)).Returns(_gitRepos);
                 }
+
 
                 [Fact]
                 public void The_git_client_search_is_executed()
                 {
+                    SetupGitClient();
+
                     Execute();
 
                     _gitClient.Verify(c => c.Search(_inputModel.SearchCriteria), Times.Once);
+                }
+
+                [Fact]
+                public void The_search_results_get_set()
+                {
+                    SetupGitClient();
+
+                    Execute();
+
+                    Assert.Equal(_gitRepos, _outputModel.Repositories)
                 }
             }
         }
