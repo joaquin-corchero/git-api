@@ -24,20 +24,15 @@ namespace Git.Tests
         {
             string _searchCriteria = "something";
             List<GitRepository> _result;
-            GitQuery _query;
 
-            void Execute()
-            {
-                _query = new GitQuery { q = _searchCriteria };
-                _result = _gitClient.Search(_searchCriteria);
-            }            
+            void Execute() =>  _result = _gitClient.Search(_searchCriteria);
 
             [Fact]
             public void The_http_client_is_called()
             {
                 Execute();
 
-                _httpClient.Verify(c => c.Get(_gitClient.SearchUrl, JsonConvert.SerializeObject(_query)), Times.Once);
+                _httpClient.Verify(c => c.Get(_gitClient.SearchUrl, _searchCriteria), Times.Once);
             }
         }
     }

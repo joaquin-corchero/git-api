@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Git.Web.Models;
 using Git.Web.Services;
+using System.Threading.Tasks;
 
 namespace Git.Web.Controllers
 {
@@ -12,12 +13,14 @@ namespace Git.Web.Controllers
 
         public ViewResult Index() => View(new SearchModel());
 
-        public ViewResult Search(SearchModel inputModel)
+        public async Task<IActionResult> Search(SearchModel inputModel)
         {
             if(!ModelState.IsValid)
                 return View(nameof(Index), inputModel);
 
-            inputModel.SetResults(_gitClient.Search(inputModel.SearchCriteria));
+            var results = await _gitClient.Search(inputModel.SearchCriteria);
+
+            inputModel.SetResults(results);
 
             return View(nameof(Index), inputModel);
         }

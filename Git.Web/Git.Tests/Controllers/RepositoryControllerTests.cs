@@ -93,7 +93,7 @@ namespace Git.Tests.Controllers
                 {
                     _gitRepos = new List<GitRepository> {
                         new GitRepository{
-                            OwnerName = "Owner 1",
+                            Name = "Owner 1",
                             RepositoryName = "Repo 1",
                             RepositoryURL = "www.github.com/pepe",
                             CreationDate = DateTime.Now.AddMonths(-1),

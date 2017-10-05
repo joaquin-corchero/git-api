@@ -1,7 +1,5 @@
 ﻿using Git.Web.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Git.Web.Services
@@ -10,7 +8,7 @@ namespace Git.Web.Services
     {
         string SearchUrl { get; }
 
-        List<GitRepository> Search(string searchCriteria);
+        Task<List<GitRepository>> Search(string searchCriteria);
     }
 
     public class GitClient : IGitClient
@@ -21,9 +19,11 @@ namespace Git.Web.Services
 
         public string SearchUrl => "https://api.github.com/search/repositories";
 
-        public List<GitRepository> Search(string searchCriteria)
+        public async Task<List<GitRepository>> Search(string searchCriteria)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.Get(SearchUrl, searchCriteria);
+
+            return null;
         }
     }
 }
