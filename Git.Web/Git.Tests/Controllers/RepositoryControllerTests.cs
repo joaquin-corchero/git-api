@@ -123,6 +123,16 @@ namespace Git.Tests.Controllers
 
                     Assert.Equal(_gitRepos, _outputModel.Repositories);
                 }
+
+                [Fact]
+                public void Index_view_is_returned()
+                {
+                    SetupGitClient();
+
+                    Execute();
+
+                    Assert.Equal(nameof(_controller.Index), _viewResult.ViewName);
+                }
             }
         }
     }
