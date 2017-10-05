@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Git.Web.Services;
 
 namespace Git.Web
 {
@@ -22,6 +23,8 @@ namespace Git.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddTransient<IGitClient, GitClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
