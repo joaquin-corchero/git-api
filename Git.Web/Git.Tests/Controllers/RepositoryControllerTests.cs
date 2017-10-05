@@ -1,4 +1,5 @@
 using Git.Web.Controllers;
+using Git.Web.Data;
 using Git.Web.Models;
 using Git.Web.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,7 @@ namespace Git.Tests.Controllers
                 Execute();
 
                 Assert.Equal(null, _resultModel.SearchCriteria);
-                Assert.False(_resultModel.Repositories.Any());
+                Assert.Null(_resultModel.SearchResults);
             }
         }
 
@@ -71,13 +72,13 @@ namespace Git.Tests.Controllers
                     _viewResult = await _controller.Search(_inputModel);
 
                     var outputModel = (SearchModel)((ViewResult)_viewResult).Model;
-                    Assert.False(outputModel.Repositories.Any());
+                    Assert.Null(outputModel.SearchResults);
                 }
             }
 
             public class And_the_model_is_valid : And_searching_repositories
             {
-                List<GitRepository> _gitRepos;
+                SearchResult _searchResults;
 
                 public And_the_model_is_valid()
                 {
@@ -86,17 +87,9 @@ namespace Git.Tests.Controllers
 
                 void SetupGitClient()
                 {
-                    _gitRepos = new List<GitRepository> {
-                        new GitRepository{
-                            Name = "Owner 1",
-                            RepositoryName = "Repo 1",
-                            RepositoryURL = "www.github.com/pepe",
-                            CreationDate = DateTime.Now.AddMonths(-1),
-                            LastPushDate  = DateTime.Now.AddDays(-1)
-                        }
-                    };
+                    _searchResults = new SearchResult{ TotalCount = 10 };
 
-                    _gitClient.Setup(c => c.Search(_inputModel.SearchCriteria)).ReturnsAsync(_gitRepos);
+                    _gitClient.Setup(c => c.Search(_inputModel.SearchCriteria)).ReturnsAsync(_searchResults);
                 }
 
                 [Fact]
@@ -117,7 +110,7 @@ namespace Git.Tests.Controllers
                     _viewResult = await _controller.Search(_inputModel);
                     var outputModel = (SearchModel)((ViewResult)_viewResult).Model;
 
-                    Assert.Equal(_gitRepos, outputModel.Repositories);
+                    Assert.Equal(_searchResults, outputModel.SearchResults);
                 }
 
                 [Fact]

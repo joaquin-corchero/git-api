@@ -1,0 +1,56 @@
+﻿@model Git.Web.Data.SearchResult
+
+<h3>Number of repos found @Model.TotalCount @(Model.ImcompleteResults? "Results incomplete" : "")</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Owner name
+            </th>
+            <th>
+                Repository name
+            </th>
+            <th>
+                Repository URL
+            </th>
+            <th>
+                Created date
+            </th>
+            <th>
+                Last push date
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Items.Any())
+        {
+            <tr>
+                <td colspan="5">No repositories found, try again</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Owner.Login)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Url)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedAt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PushedAt)
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

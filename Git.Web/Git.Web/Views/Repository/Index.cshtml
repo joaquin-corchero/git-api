@@ -1,0 +1,35 @@
+﻿@model Git.Web.Models.SearchModel
+@{
+    ViewData["Title"] = "Index";
+}
+<h2>Index</h2>
+<h4>SearchModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Search" method="get">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="SearchCriteria" class="control-label"></label>
+                <input asp-for="SearchCriteria" class="form-control" />
+                <span asp-validation-for="SearchCriteria" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.SearchResults != null)
+{
+    if (Model.SearchResults.Success)
+    {
+    <div>
+        @Html.Partial("Results", Model.SearchResults)
+    </div>
+    }else
+    {
+        <h3>There was a problem executing your request @Model.SearchResults.ErrorMessage</h3>
+    }
+}

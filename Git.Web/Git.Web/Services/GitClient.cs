@@ -1,14 +1,13 @@
-﻿using Git.Web.Models;
-using System.Collections.Generic;
+﻿using Git.Web.Data;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace Git.Web.Services
 {
     public interface IGitClient
     {
-        string SearchUrl { get; }
-
-        Task<List<GitRepository>> Search(string searchCriteria);
+        Task<SearchResult> Search(string searchCriteria);
     }
 
     public class GitClient : IGitClient
@@ -17,13 +16,32 @@ namespace Git.Web.Services
 
         public GitClient(IHttpClient httpClient) => _httpClient = httpClient;
 
-        public string SearchUrl => "https://api.github.com/search/repositories";
+        public const string SEARCHURL = "https://api.github.com/search/repositories";
 
-        public async Task<List<GitRepository>> Search(string searchCriteria)
+        public async Task<SearchResult> Search(string searchCriteria)
         {
-            var response = await _httpClient.Get(SearchUrl, searchCriteria);
+            var response = await _httpClient.GetAsync($"{SEARCHURL}?q={searchCriteria}");
 
-            return null;
+            switch (response.StatusCode)
+            {
+                case System.Net.HttpStatusCode.OK:
+                    return await GetSearchResult(response);
+                default:
+                    return new SearchResult
+                    {
+                        Success = false,
+                        ErrorMessage = $"Status code from Github: {response.StatusCode}"
+                    };
+            }
+        }
+
+        async Task<SearchResult> GetSearchResult(System.Net.Http.HttpResponseMessage response)
+        {
+            string content = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<SearchResult>(content);
+            result.Items = result.Items.Take(5).ToList();
+            result.Success = true;
+            return result;
         }
     }
 }

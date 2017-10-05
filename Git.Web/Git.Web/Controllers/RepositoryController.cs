@@ -11,11 +11,14 @@ namespace Git.Web.Controllers
 
         public RepositoryController(IGitClient gitClient) => _gitClient = gitClient;
 
-        public ViewResult Index() => View(new SearchModel());
+        public ActionResult Index()
+        {
+           return View(new SearchModel());
+        }
 
         public async Task<IActionResult> Search(SearchModel inputModel)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(nameof(Index), inputModel);
 
             var results = await _gitClient.Search(inputModel.SearchCriteria);

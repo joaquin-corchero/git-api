@@ -7,20 +7,18 @@ namespace Git.Web.Services
 {
     public interface IHttpClient
     {
-        Task<HttpResponseMessage> Get(string address, object queryObject);
+        Task<HttpResponseMessage> GetAsync(string url);
     }
 
     public class HttpClientWrapper : IHttpClient
     {
-        public async Task<HttpResponseMessage> Get(string address, object queryObject)
+        public async Task<HttpResponseMessage> GetAsync(string url)
         {
             using (HttpClient client = new HttpClient())
             {
-                var url = queryObject == null ? address : $"{address}/{JsonConvert.SerializeObject(queryObject)}";
-                
-                client.BaseAddress = new Uri(address);
+                client.DefaultRequestHeaders.Add("User-Agent", "Git-Repo-Search");
 
-                return await client.GetAsync(address);
+                return await client.GetAsync(url);
             }
         }
 
