@@ -6,6 +6,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Git.Tests.Controllers
@@ -45,15 +46,8 @@ namespace Git.Tests.Controllers
 
         public class And_searching_repositories : When_working_with_the_repository_controller
         {
-            protected ViewResult _viewResult;
-            protected SearchModel _outputModel;
+            protected IActionResult _viewResult;
             protected SearchModel _inputModel;
-
-            void Execute()
-            {
-                _viewResult = _controller.Search(_inputModel) as ViewResult;
-                _outputModel = (SearchModel)_viewResult.Model;
-            }
 
             public class And_the_model_is_invalid : And_searching_repositories
             {
@@ -64,19 +58,20 @@ namespace Git.Tests.Controllers
                 }
 
                 [Fact]
-                public void No_request_is_made_to_the_git_client()
+                public async Task No_request_is_made_to_the_git_client()
                 {
-                    Execute();
+                    _viewResult = await _controller.Search(_inputModel);
 
                     _gitClient.Verify(c => c.Search(It.IsAny<string>()), Times.Never);
                 }
 
                 [Fact]
-                public void The_repos_are_empty()
+                public async Task The_repos_are_empty()
                 {
-                    Execute();
+                    _viewResult = await _controller.Search(_inputModel);
 
-                    Assert.False(_outputModel.Repositories.Any());
+                    var outputModel = (SearchModel)((ViewResult)_viewResult).Model;
+                    Assert.False(outputModel.Repositories.Any());
                 }
             }
 
@@ -101,37 +96,38 @@ namespace Git.Tests.Controllers
                         }
                     };
 
-                    _gitClient.Setup(c => c.Search(_inputModel.SearchCriteria)).Returns(_gitRepos);
+                    _gitClient.Setup(c => c.Search(_inputModel.SearchCriteria)).ReturnsAsync(_gitRepos);
                 }
 
                 [Fact]
-                public void The_git_client_search_is_executed()
+                public async Task The_git_client_search_is_executed()
                 {
                     SetupGitClient();
 
-                    Execute();
+                    _viewResult = await _controller.Search(_inputModel);
 
                     _gitClient.Verify(c => c.Search(_inputModel.SearchCriteria), Times.Once);
                 }
 
                 [Fact]
-                public void The_search_results_get_set()
+                public async Task The_search_results_get_set()
                 {
                     SetupGitClient();
 
-                    Execute();
+                    _viewResult = await _controller.Search(_inputModel);
+                    var outputModel = (SearchModel)((ViewResult)_viewResult).Model;
 
-                    Assert.Equal(_gitRepos, _outputModel.Repositories);
+                    Assert.Equal(_gitRepos, outputModel.Repositories);
                 }
 
                 [Fact]
-                public void Index_view_is_returned()
+                public async Task Index_view_is_returned()
                 {
                     SetupGitClient();
 
-                    Execute();
+                    _viewResult = await _controller.Search(_inputModel);
 
-                    Assert.Equal(nameof(_controller.Index), _viewResult.ViewName);
+                    Assert.Equal(nameof(_controller.Index), ((ViewResult)_viewResult).ViewName);
                 }
             }
         }

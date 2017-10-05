@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Git.Tests
@@ -25,12 +26,10 @@ namespace Git.Tests
             string _searchCriteria = "something";
             List<GitRepository> _result;
 
-            void Execute() =>  _result = _gitClient.Search(_searchCriteria);
-
             [Fact]
-            public void The_http_client_is_called()
+            public async Task The_http_client_is_called()
             {
-                Execute();
+                _result = await _gitClient.Search(_searchCriteria);
 
                 _httpClient.Verify(c => c.Get(_gitClient.SearchUrl, _searchCriteria), Times.Once);
             }
