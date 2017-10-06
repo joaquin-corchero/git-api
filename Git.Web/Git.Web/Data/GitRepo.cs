@@ -43,4 +43,15 @@ namespace Git.Web.Data
             GitCommits = new List<GitCommit>();
         }
     }
+
+    public class GitUser
+    {
+        public string Login { get; set; }
+
+        public int Id { get; set; }
+
+        public string AvatarUrl { get; set; }
+
+        public string Url { get; set; }
+    }
 }

@@ -58,7 +58,7 @@ namespace Git.Tests
                 _result = await _gitClient.SearchAsync(_searchCriteria);
 
                 Assert.Equal("Couldn't retrieve repos: Some comunication issue", _result.ErrorMessage);
-                Assert.False(_result.Success);
+                Assert.False(_result.CouldRetrieveRepos);
             }
 
             [Fact]
@@ -69,7 +69,7 @@ namespace Git.Tests
                 _result = await _gitClient.SearchAsync(_searchCriteria);
 
                 Assert.Equal(null, _result.ErrorMessage);
-                Assert.True(_result.Success);
+                Assert.True(_result.CouldRetrieveRepos);
             }
 
             [Fact]

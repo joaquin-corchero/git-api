@@ -14,34 +14,32 @@ namespace Git.Web.Services
     public class GitClient : IGitClient
     {
         readonly IHttpClient _httpClient;
-
-        public GitClient(IHttpClient httpClient) => _httpClient = httpClient;
-
         public const string SEARCHURL = "https://api.github.com/search/repositories";
         public const string COMMITSURL = "https://api.github.com/repos";
+
+        public GitClient(IHttpClient httpClient) => _httpClient = httpClient;
 
         public async Task<SearchResult> SearchAsync(string searchCriteria)
         {
             try
             {
                 var result = await _httpClient.GetAsync<SearchResult>($"{SEARCHURL}?q={searchCriteria}");
-                result.Items = result.Items.Take(5).ToList();
-                result.Success = true;
-
-                var tasks = result.Items.Select(i => GetCommitsAsync(i));
-
-                await Task.WhenAll(tasks);
+                result.SetSuccess();
+                await PopulateCommits(result);
 
                 return result;
             }
             catch (Exception e)
             {
-                return new SearchResult
-                {
-                    Success = false,
-                    ErrorMessage = $"Couldn't retrieve repos: {e.Message}"
-                };
+                return SearchResult.CreateWithError(e);
             }
+        }
+
+        async Task PopulateCommits(SearchResult result)
+        {
+            var tasks = result.Items.Select(i => GetCommitsAsync(i));
+
+            await Task.WhenAll(tasks);
         }
 
         async Task GetCommitsAsync(GitRepo gitRepo)
