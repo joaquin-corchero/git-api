@@ -1,6 +1,8 @@
-﻿using Git.Web.Data;
+﻿using Git.Web.CongifSettings;
+using Git.Web.Data;
 using Git.Web.Models;
 using Git.Web.Services;
+using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -14,11 +16,19 @@ namespace Git.Tests.Services
     {
         IGitClient _gitClient;
         Mock<IHttpClient> _httpClient;
+        Mock<IOptions<GitUrlSettings>> _urlSettings;
+        const string COMMITURL = "http://www.commit.com";
+        const string SEARCHURL = "http://www.search.com";
 
         public When_working_with_the_git_client()
         {
             _httpClient = new Mock<IHttpClient>();
-            _gitClient = new GitClient(_httpClient.Object);
+            _urlSettings = new Mock<IOptions<GitUrlSettings>>();
+
+            var urlSettings = new GitUrlSettings { SearchUrl = SEARCHURL, CommitUrl = COMMITURL };
+            _urlSettings.Setup(c => c.Value).Returns(urlSettings);
+
+            _gitClient = new GitClient(_httpClient.Object, _urlSettings.Object);
         }
 
         public class And_searching : When_working_with_the_git_client
@@ -29,7 +39,7 @@ namespace Git.Tests.Services
 
             public And_searching()
             {
-                _searchUrl = $"{GitClient.SEARCHURL}?q={_searchCriteria}";
+                _searchUrl = $"{SEARCHURL}?q={_searchCriteria}";
             }
 
             public void SetupHttpClientForSearchResult(SearchResultModel clientOutput)
@@ -149,7 +159,7 @@ namespace Git.Tests.Services
 
             string GetCommtRequestUrl(GitRepo repo)
             {
-                return $"{GitClient.COMMITSURL}/{repo.Owner.Login}/{repo.Name}/commits";
+                return $"{COMMITURL}/{repo.Owner.Login}/{repo.Name}/commits";
             }
 
             void SetupHttpClientForCommits(SearchResultModel expectedRepos)

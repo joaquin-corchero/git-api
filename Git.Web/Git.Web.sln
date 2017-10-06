@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Git.Web", "Git.Web\Git.Web.csproj", "{859E5589-56A3-49C4-8E65-9286C7F23154}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Git.Web", "Git.Web\Git.Web.csproj", "{859E5589-56A3-49C4-8E65-9286C7F23154}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Git.Tests", "Git.Tests\Git.Tests.csproj", "{7778ACD8-1020-4D3E-839A-57DF51A58326}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Git.Tests", "Git.Tests\Git.Tests.csproj", "{7778ACD8-1020-4D3E-839A-57DF51A58326}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{018753AA-4AEF-432F-B43E-AD127E83555C}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

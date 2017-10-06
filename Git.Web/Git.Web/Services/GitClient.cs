@@ -4,6 +4,8 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using Git.Web.Models;
+using Microsoft.Extensions.Options;
+using Git.Web.CongifSettings;
 
 namespace Git.Web.Services
 {
@@ -15,16 +17,19 @@ namespace Git.Web.Services
     public class GitClient : IGitClient
     {
         readonly IHttpClient _httpClient;
-        public const string SEARCHURL = "https://api.github.com/search/repositories";
-        public const string COMMITSURL = "https://api.github.com/repos";
-
-        public GitClient(IHttpClient httpClient) => _httpClient = httpClient;
+        readonly GitUrlSettings _urlSettings;
+        
+        public GitClient(IHttpClient httpClient, IOptions<GitUrlSettings> urlSettings)
+        {
+            _httpClient = httpClient;
+            _urlSettings = urlSettings.Value;
+        }
 
         public async Task<SearchResultModel> SearchAsync(string searchCriteria)
         {
             try
             {
-                var result = await _httpClient.GetAsync<SearchResultModel>($"{SEARCHURL}?q={searchCriteria}");
+                var result = await _httpClient.GetAsync<SearchResultModel>($"{_urlSettings.SearchUrl}?q={searchCriteria}");
                 result.SetSuccess();
                 await PopulateCommits(result);
 
@@ -46,7 +51,7 @@ namespace Git.Web.Services
         {
             try
             {
-                string url = $"{COMMITSURL}/{gitRepo.Owner.Login}/{gitRepo.Name}/commits";
+                string url = $"{_urlSettings.CommitUrl}/{gitRepo.Owner.Login}/{gitRepo.Name}/commits";
                 var result = await _httpClient.GetAsync<List<GitCommit>>(url);
                 gitRepo.SetSuccess(result);
             }

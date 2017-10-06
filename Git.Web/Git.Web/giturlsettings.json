@@ -1,0 +1,4 @@
+﻿{
+  "SearchUrl": "https://api.github.com/search/repositories",
+  "CommitUrl": "https://api.github.com/repos"
+}
