@@ -57,7 +57,7 @@ namespace Git.Tests
 
                 _result = await _gitClient.SearchAsync(_searchCriteria);
 
-                Assert.Equal("Error getting repos: Some comunication issue", _result.ErrorMessage);
+                Assert.Equal("Couldn't retrieve repos: Some comunication issue", _result.ErrorMessage);
                 Assert.False(_result.Success);
             }
 
@@ -133,6 +133,21 @@ namespace Git.Tests
                 Assert.Equal(2, _result.Items[0].GitCommits.Count());
                 Assert.Equal($"Message 1 for repo {_result.Items[0].Name}", _result.Items[0].GitCommits[0].Commit.Message);
                 Assert.Equal($"Message 2 for repo {_result.Items[0].Name}", _result.Items[0].GitCommits[1].Commit.Message);
+            }
+
+            [Fact]
+            public async Task Error_message_on_the_repo_is_set_when_exception_getting_commits()
+            {
+                var expectionMessage = "Communication error";
+                var expectedRepos = GetNRepos(1);
+                SetupHttpClientForSearchResult(expectedRepos);
+                _httpClient.Setup(c => c.GetAsync<List<GitCommit>>(It.IsAny<string>()))
+                  .ThrowsAsync(new Exception(expectionMessage));
+
+                _result = await _gitClient.SearchAsync(_searchCriteria);
+
+                Assert.False(_result.Items[0].CouldRetriveCommits);
+                Assert.Equal($"Couldn't retrieve commits: {expectionMessage}", _result.Items[0].ErrorMessage);
             }
 
             string GetCommtRequestUrl(GitRepo repo)

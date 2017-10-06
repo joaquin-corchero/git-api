@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace Git.Web.Data
 {
     public class GitRepo
     {
-
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -27,5 +25,22 @@ namespace Git.Web.Data
         public string GitUrl { get; set; }
 
         public IList<GitCommit> GitCommits { get; internal set; }
+
+        public bool CouldRetriveCommits { get; private set; }
+
+        public string ErrorMessage { get; private set; }
+
+        internal void SetSuccess(List<GitCommit> commits)
+        {
+            GitCommits = commits.Take(5).ToList();
+            CouldRetriveCommits = true;
+        }
+
+        internal void SetError(Exception e)
+        {
+            CouldRetriveCommits = false;
+            ErrorMessage = $"Couldn't retrieve commits: {e.Message}";
+            GitCommits = new List<GitCommit>();
+        }
     }
 }

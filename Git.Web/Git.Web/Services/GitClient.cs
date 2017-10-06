@@ -39,7 +39,7 @@ namespace Git.Web.Services
                 return new SearchResult
                 {
                     Success = false,
-                    ErrorMessage = $"Error getting repos: {e.Message}"
+                    ErrorMessage = $"Couldn't retrieve repos: {e.Message}"
                 };
             }
         }
@@ -50,10 +50,11 @@ namespace Git.Web.Services
             {
                 string url = $"{COMMITSURL}/{gitRepo.Owner.Login}/{gitRepo.Name}/commits";
                 var result = await _httpClient.GetAsync<List<GitCommit>>(url);
-                gitRepo.GitCommits = result.Take(5).ToList();
-            }catch(Exception e)
+                gitRepo.SetSuccess(result);
+            }
+            catch(Exception e)
             {
-                gitRepo.GitCommits = new List<GitCommit> { new GitCommit { Sha = e.Message } };
+                gitRepo.SetError(e);
             }
         }
     }
