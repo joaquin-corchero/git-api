@@ -39,7 +39,6 @@ namespace Git.Web.Services
         async Task PopulateCommits(SearchResultModel result)
         {
             var tasks = result.Items.Select(i => GetCommitsAsync(i));
-
             await Task.WhenAll(tasks);
         }
 
