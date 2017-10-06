@@ -33,3 +33,8 @@ body {
         display: none;
     }
 }
+
+.git-commit td, .git-commit th{
+    font-size: smaller;
+    background-color: #cccccc;
+}

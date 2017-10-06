@@ -1,9 +1,6 @@
 ﻿using Git.Web.Data;
-using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Git.Web.Models
 {
@@ -12,6 +9,7 @@ namespace Git.Web.Models
         [Required]
         [MinLength(2, ErrorMessage = "Search criteria must between 2 and 25 characters in lenght")]
         [MaxLength(25, ErrorMessage = "Search criteria must between 2 and 25 characters in lenght")]
+        [DisplayName("Search criteria")]
         public string SearchCriteria { get; set; }
 
         public SearchResult SearchResults { get; private set; }

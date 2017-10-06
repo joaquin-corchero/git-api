@@ -1,10 +1,8 @@
 ﻿@model Git.Web.Models.SearchModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Git repo search";
 }
-<h2>Index</h2>
-<h4>SearchModel</h4>
-<hr />
+<h2>Git repo search</h2>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Search" method="get">
@@ -23,13 +21,14 @@
 
 @if (Model.SearchResults != null)
 {
-    if (Model.SearchResults.Success)
+    if (Model.SearchResults.CouldRetrieveRepos)
     {
-    <div>
-        @Html.Partial("Results", Model.SearchResults)
-    </div>
-    }else
+        <div>
+            @Html.Partial("_Repos", Model.SearchResults)
+        </div>
+    }
+    else
     {
-        <h3>There was a problem executing your request @Model.SearchResults.ErrorMessage</h3>
+        <div class="alert alert-danger">@Model.SearchResults.ErrorMessage</div>
     }
 }

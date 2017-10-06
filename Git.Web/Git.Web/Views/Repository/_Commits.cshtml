@@ -1,0 +1,27 @@
+﻿@model Git.Web.Data.GitRepo
+
+@if (!Model.CouldRetriveCommits)
+{
+    <tr>
+        <th><span class="alert alert-danger">@Model.ErrorMessage</span></th>
+    </tr>
+}
+else
+{
+    <tr class="git-commit">
+        <th>CommiterName</th>
+        <th colspan="2">Message</th>
+        <th>Sha</th>
+        <th>Date</th>
+    </tr>
+    @foreach (var commit in Model.GitCommits)
+    {
+        <tr class="git-commit">
+            <td>@commit.Commit.committer.Name</td>
+            <td colspan="2">@commit.Commit.Message</td>
+            <td>@commit.Sha</td>
+            <td>@commit.Commit.committer.Date</td>
+        </tr>
+
+    }
+}

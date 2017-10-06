@@ -40,25 +40,7 @@
                         @Html.DisplayFor(modelItem => item.PushedAt)
                     </td>
                 </tr>
-                if (item.GitCommits != null && item.GitCommits.Any())
-                {
-                    <tr>
-                        <th>CommiterName</th>
-                        <th colspan="2">Message</th>
-                        <th>Sha</th>
-                        <th>Date</th>
-                    </tr>
-                    @foreach (var commit in item.GitCommits)
-                    {
-                        <tr>
-                            <td>@commit.Commit.committer.Name</td>
-                            <td colspan="2">@commit.Commit.Message</td>
-                            <td>@commit.Sha</td>
-                            <td>@commit.Commit.committer.Date</td>
-                        </tr>
-
-                    }
-                }
+                @Html.Partial("_Commits", item)
             }
         }
     </tbody>
