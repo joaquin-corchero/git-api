@@ -2,16 +2,13 @@
 using Git.Web.Models;
 using Git.Web.Services;
 using Moq;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Git.Tests
+namespace Git.Tests.Services
 {
     public class When_working_with_the_git_client
     {

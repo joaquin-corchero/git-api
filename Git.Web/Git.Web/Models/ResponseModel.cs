@@ -1,5 +1,4 @@
-﻿using Git.Web.Data;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Git.Web.Models
