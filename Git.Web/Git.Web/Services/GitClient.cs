@@ -44,16 +44,16 @@ namespace Git.Web.Services
             }
         }
 
-        async Task GetCommitsAsync(GitRepo i)
+        async Task GetCommitsAsync(GitRepo gitRepo)
         {
             try
             {
-                var result = await _httpClient.GetAsync<List<GitCommit>>($"{COMMITSURL}/{i.Owner.Login}/{i.Name}/commits");
-
-                i.GitCommits = result.Take(5).ToList();
+                string url = $"{COMMITSURL}/{gitRepo.Owner.Login}/{gitRepo.Name}/commits";
+                var result = await _httpClient.GetAsync<List<GitCommit>>(url);
+                gitRepo.GitCommits = result.Take(5).ToList();
             }catch(Exception e)
             {
-                i.GitCommits = new List<GitCommit> { new GitCommit { Sha = e.Message } };
+                gitRepo.GitCommits = new List<GitCommit> { new GitCommit { Sha = e.Message } };
             }
         }
     }
