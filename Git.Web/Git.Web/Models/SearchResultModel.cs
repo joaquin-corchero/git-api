@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Git.Web.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Git.Web.Data
+namespace Git.Web.Models
 {
-    public class SearchResult
+    public class SearchResultModel
     {
         public int Total_Count { get; set; }
         public bool ImcompleteResults { get; set; }
@@ -13,7 +14,7 @@ namespace Git.Web.Data
         public bool CouldRetrieveRepos { get; private set; }
         public string ErrorMessage { get; private set; }
 
-        public SearchResult() { }
+        public SearchResultModel() { }
 
         internal void SetSuccess()
         {
@@ -21,9 +22,9 @@ namespace Git.Web.Data
             CouldRetrieveRepos = true;
         }
 
-        internal static SearchResult CreateWithError(Exception e)
+        internal static SearchResultModel CreateWithError(Exception e)
         {
-            return new SearchResult
+            return new SearchResultModel
             {
                 CouldRetrieveRepos = false,
                 ErrorMessage = $"Couldn't retrieve repos: {e.Message}"

@@ -1,7 +1,7 @@
-﻿@model Git.Web.Data.SearchResult
+﻿@model SearchResultModel
 
-<h3>Number of repos found @Model.Total_Count @(Model.ImcompleteResults ? "Results incomplete" : "")</h3>
-
+<hr />
+<h4>Total number of repos found @Model.Total_Count @(Model.ImcompleteResults ? "Results incomplete" : ".")</h4>
 <table class="table table-striped">
     <thead>
         <tr>

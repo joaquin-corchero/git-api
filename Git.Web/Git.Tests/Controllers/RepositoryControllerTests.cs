@@ -78,7 +78,7 @@ namespace Git.Tests.Controllers
 
             public class And_the_model_is_valid : And_searching_repositories
             {
-                SearchResult _searchResults;
+                SearchResultModel _searchResults;
 
                 public And_the_model_is_valid()
                 {
@@ -87,7 +87,7 @@ namespace Git.Tests.Controllers
 
                 void SetupGitClient()
                 {
-                    _searchResults = new SearchResult{ Total_Count = 10 };
+                    _searchResults = new SearchResultModel{ Total_Count = 10 };
 
                     _gitClient.Setup(c => c.SearchAsync(_inputModel.SearchCriteria)).ReturnsAsync(_searchResults);
                 }

@@ -27,7 +27,7 @@ namespace Git.Tests
         public class And_searching : When_working_with_the_git_client
         {
             const string _searchCriteria = "something";
-            SearchResult _result;
+            SearchResultModel _result;
             string _searchUrl;
 
             public And_searching()
@@ -35,9 +35,9 @@ namespace Git.Tests
                 _searchUrl = $"{GitClient.SEARCHURL}?q={_searchCriteria}";
             }
 
-            public void SetupHttpClientForSearchResult(SearchResult clientOutput)
+            public void SetupHttpClientForSearchResult(SearchResultModel clientOutput)
             {
-                _httpClient.Setup(c => c.GetAsync<SearchResult>(_searchUrl))
+                _httpClient.Setup(c => c.GetAsync<SearchResultModel>(_searchUrl))
                    .ReturnsAsync(clientOutput);
             }
 
@@ -46,13 +46,13 @@ namespace Git.Tests
             {
                 await _gitClient.SearchAsync(_searchCriteria);
 
-                _httpClient.Verify(c => c.GetAsync<SearchResult>(_searchUrl), Times.Once);
+                _httpClient.Verify(c => c.GetAsync<SearchResultModel>(_searchUrl), Times.Once);
             }
 
             [Fact]
             public async Task Error_is_set_if_exception_is_thrown()
             {
-                _httpClient.Setup(c => c.GetAsync<SearchResult>(_searchUrl))
+                _httpClient.Setup(c => c.GetAsync<SearchResultModel>(_searchUrl))
                     .ThrowsAsync(new Exception("Some comunication issue"));
 
                 _result = await _gitClient.SearchAsync(_searchCriteria);
@@ -64,7 +64,7 @@ namespace Git.Tests
             [Fact]
             public async Task Success_can_be_returned()
             {
-                SetupHttpClientForSearchResult(new SearchResult { Items = new List<GitRepo>() });
+                SetupHttpClientForSearchResult(new SearchResultModel { Items = new List<GitRepo>() });
 
                 _result = await _gitClient.SearchAsync(_searchCriteria);
 
@@ -84,9 +84,9 @@ namespace Git.Tests
                 Assert.Equal(5, _result.Items.Count());
             }
 
-            SearchResult GetNRepos(int n)
+            SearchResultModel GetNRepos(int n)
             {
-                var expectedSearchResult = new SearchResult { Items = new List<GitRepo>() };
+                var expectedSearchResult = new SearchResultModel { Items = new List<GitRepo>() };
                 Enumerable
                     .Range(1, n)
                     .ToList()
@@ -155,7 +155,7 @@ namespace Git.Tests
                 return $"{GitClient.COMMITSURL}/{repo.Owner.Login}/{repo.Name}/commits";
             }
 
-            void SetupHttpClientForCommits(SearchResult expectedRepos)
+            void SetupHttpClientForCommits(SearchResultModel expectedRepos)
             {
                 expectedRepos.Items.ToList().ForEach(repo => SetupHttpClientForCommit(repo));
             }

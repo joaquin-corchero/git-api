@@ -18,6 +18,7 @@ namespace Git.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCaching();
             services.AddMvc();
 
             services.AddTransient<IGitClient, GitClient>();
@@ -37,6 +38,7 @@ namespace Git.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseResponseCaching();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>

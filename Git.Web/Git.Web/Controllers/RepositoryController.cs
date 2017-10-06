@@ -2,6 +2,7 @@
 using Git.Web.Models;
 using Git.Web.Services;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Git.Web.Controllers
 {
@@ -16,6 +17,7 @@ namespace Git.Web.Controllers
            return View(new SearchModel());
         }
 
+        [ResponseCache(Duration = 180, Location = ResponseCacheLocation.Any,  VaryByQueryKeys = new[] { "SearchCriteria" })]
         public async Task<IActionResult> Search(SearchModel inputModel)
         {
             if (!ModelState.IsValid)

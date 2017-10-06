@@ -8,8 +8,7 @@
         <form asp-action="Search" method="get">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="SearchCriteria" class="control-label"></label>
-                <input asp-for="SearchCriteria" class="form-control" />
+                <input asp-for="SearchCriteria" class="form-control" placeholder="Search criteria" />
                 <span asp-validation-for="SearchCriteria" class="text-danger"></span>
             </div>
             <div class="form-group">

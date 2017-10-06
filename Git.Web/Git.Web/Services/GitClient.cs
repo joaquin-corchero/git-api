@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using Git.Web.Models;
 
 namespace Git.Web.Services
 {
     public interface IGitClient
     {
-        Task<SearchResult> SearchAsync(string searchCriteria);
+        Task<SearchResultModel> SearchAsync(string searchCriteria);
     }
 
     public class GitClient : IGitClient
@@ -19,11 +20,11 @@ namespace Git.Web.Services
 
         public GitClient(IHttpClient httpClient) => _httpClient = httpClient;
 
-        public async Task<SearchResult> SearchAsync(string searchCriteria)
+        public async Task<SearchResultModel> SearchAsync(string searchCriteria)
         {
             try
             {
-                var result = await _httpClient.GetAsync<SearchResult>($"{SEARCHURL}?q={searchCriteria}");
+                var result = await _httpClient.GetAsync<SearchResultModel>($"{SEARCHURL}?q={searchCriteria}");
                 result.SetSuccess();
                 await PopulateCommits(result);
 
@@ -31,11 +32,11 @@ namespace Git.Web.Services
             }
             catch (Exception e)
             {
-                return SearchResult.CreateWithError(e);
+                return SearchResultModel.CreateWithError(e);
             }
         }
 
-        async Task PopulateCommits(SearchResult result)
+        async Task PopulateCommits(SearchResultModel result)
         {
             var tasks = result.Items.Select(i => GetCommitsAsync(i));
 

@@ -27,7 +27,7 @@ namespace Git.Web.Data
 
         public string Email { get; set; }
 
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         public Committer() { }
     }
