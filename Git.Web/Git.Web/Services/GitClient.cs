@@ -1,13 +1,14 @@
 ﻿using Git.Web.Data;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace Git.Web.Services
 {
     public interface IGitClient
     {
-        Task<SearchResult> Search(string searchCriteria);
+        Task<SearchResult> SearchAsync(string searchCriteria);
     }
 
     public class GitClient : IGitClient
@@ -17,31 +18,43 @@ namespace Git.Web.Services
         public GitClient(IHttpClient httpClient) => _httpClient = httpClient;
 
         public const string SEARCHURL = "https://api.github.com/search/repositories";
+        public const string COMMITSURL = "https://api.github.com/repos";
 
-        public async Task<SearchResult> Search(string searchCriteria)
+        public async Task<SearchResult> SearchAsync(string searchCriteria)
         {
-            var response = await _httpClient.GetAsync($"{SEARCHURL}?q={searchCriteria}");
-
-            switch (response.StatusCode)
+            try
             {
-                case System.Net.HttpStatusCode.OK:
-                    return await GetSearchResult(response);
-                default:
-                    return new SearchResult
-                    {
-                        Success = false,
-                        ErrorMessage = $"Status code from Github: {response.StatusCode}"
-                    };
+                var result = await _httpClient.GetAsync<SearchResult>($"{SEARCHURL}?q={searchCriteria}");
+                result.Items = result.Items.Take(5).ToList();
+                result.Success = true;
+
+                var tasks = result.Items.Select(i => GetCommitsAsync(i));
+
+                await Task.WhenAll(tasks);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return new SearchResult
+                {
+                    Success = false,
+                    ErrorMessage = $"Error getting repos: {e.Message}"
+                };
             }
         }
 
-        async Task<SearchResult> GetSearchResult(System.Net.Http.HttpResponseMessage response)
+        async Task GetCommitsAsync(GitRepo i)
         {
-            string content = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<SearchResult>(content);
-            result.Items = result.Items.Take(5).ToList();
-            result.Success = true;
-            return result;
+            try
+            {
+                var result = await _httpClient.GetAsync<List<GitCommit>>($"{COMMITSURL}/{i.Owner.Login}/{i.Name}/commits");
+
+                i.GitCommits = result.Take(5).ToList();
+            }catch(Exception e)
+            {
+                i.GitCommits = new List<GitCommit> { new GitCommit { Sha = e.Message } };
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Git.Web.Controllers
             if (!ModelState.IsValid)
                 return View(nameof(Index), inputModel);
 
-            var results = await _gitClient.Search(inputModel.SearchCriteria);
+            var results = await _gitClient.SearchAsync(inputModel.SearchCriteria);
 
             inputModel.SetResults(results);
 

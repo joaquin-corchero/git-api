@@ -63,7 +63,7 @@ namespace Git.Tests.Controllers
                 {
                     _viewResult = await _controller.Search(_inputModel);
 
-                    _gitClient.Verify(c => c.Search(It.IsAny<string>()), Times.Never);
+                    _gitClient.Verify(c => c.SearchAsync(It.IsAny<string>()), Times.Never);
                 }
 
                 [Fact]
@@ -89,7 +89,7 @@ namespace Git.Tests.Controllers
                 {
                     _searchResults = new SearchResult{ TotalCount = 10 };
 
-                    _gitClient.Setup(c => c.Search(_inputModel.SearchCriteria)).ReturnsAsync(_searchResults);
+                    _gitClient.Setup(c => c.SearchAsync(_inputModel.SearchCriteria)).ReturnsAsync(_searchResults);
                 }
 
                 [Fact]
@@ -99,7 +99,7 @@ namespace Git.Tests.Controllers
 
                     _viewResult = await _controller.Search(_inputModel);
 
-                    _gitClient.Verify(c => c.Search(_inputModel.SearchCriteria), Times.Once);
+                    _gitClient.Verify(c => c.SearchAsync(_inputModel.SearchCriteria), Times.Once);
                 }
 
                 [Fact]

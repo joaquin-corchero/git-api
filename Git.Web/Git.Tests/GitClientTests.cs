@@ -29,44 +29,41 @@ namespace Git.Tests
             const string _searchCriteria = "something";
             SearchResult _result;
             string _url;
-            HttpResponseMessage _responseMessage = new HttpResponseMessage();
 
             public And_searching()
             {
                 _url = $"{GitClient.SEARCHURL}?q={_searchCriteria}";
 
-                _httpClient.Setup(c => c.GetAsync(_url))
-                    .ReturnsAsync(_responseMessage);
+                _httpClient.Setup(c => c.GetAsync<SearchResult>(_url))
+                    .ReturnsAsync(_result);
             }
 
             [Fact]
             public async Task The_http_client_is_called()
             {
-                _responseMessage.StatusCode = System.Net.HttpStatusCode.BadRequest;
-                await _gitClient.Search(_searchCriteria);
+                await _gitClient.SearchAsync(_searchCriteria);
 
-                _httpClient.Verify(c => c.GetAsync(_url), Times.Once);
+                _httpClient.Verify(c => c.GetAsync<SearchResult>(_url), Times.Once);
             }
 
             [Fact]
-            public async Task Error_is_set_if_error_code_is_not_200()
+            public async Task Error_is_set_if_exception_is_thrown()
             {
-                var code = System.Net.HttpStatusCode.BadRequest;
-                _responseMessage.StatusCode = code;
-                _result = await _gitClient.Search(_searchCriteria);
+                _httpClient.Setup(c => c.GetAsync<SearchResult>(_url))
+                    .ThrowsAsync(new Exception("Some comunication issue"));
 
-                Assert.Equal($"Status code from Github: {code}", _result.ErrorMessage);
+                _result = await _gitClient.SearchAsync(_searchCriteria);
+
+                Assert.Equal("Error getting repos: Some comunication issue", _result.ErrorMessage);
                 Assert.False(_result.Success);
             }
 
             [Fact]
-            public async Task Success_is_returned_if_client_returns_200()
+            public async Task Success_can_be_returned()
             {
                 var expectedSearchResult = new SearchResult { Items = new List<GitRepo>() };
-                _responseMessage.StatusCode =  System.Net.HttpStatusCode.OK;
-                _responseMessage.Content = new StringContent(JsonConvert.SerializeObject(expectedSearchResult));
 
-                _result = await _gitClient.Search(_searchCriteria);
+                _result = await _gitClient.SearchAsync(_searchCriteria);
 
                 Assert.Equal(null, _result.ErrorMessage);
                 Assert.True(_result.Success);
@@ -80,10 +77,8 @@ namespace Git.Tests
                     .Range(1, 20)
                     .ToList()
                     .ForEach(i=> expectedSearchResult.Items.Add(new GitRepo { Id = i }));
-                _responseMessage.StatusCode = System.Net.HttpStatusCode.OK;
-                _responseMessage.Content = new StringContent(JsonConvert.SerializeObject(expectedSearchResult));
 
-                _result = await _gitClient.Search(_searchCriteria);
+                _result = await _gitClient.SearchAsync(_searchCriteria);
 
                 Assert.Equal(5, _result.Items.Count());
             }

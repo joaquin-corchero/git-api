@@ -7,18 +7,27 @@ namespace Git.Web.Services
 {
     public interface IHttpClient
     {
-        Task<HttpResponseMessage> GetAsync(string url);
+        Task<TType> GetAsync<TType>(string url);
     }
 
     public class HttpClientWrapper : IHttpClient
     {
-        public async Task<HttpResponseMessage> GetAsync(string url)
+        public async Task<TType> GetAsync<TType>(string url)
         {
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("User-Agent", "Git-Repo-Search");
 
-                return await client.GetAsync(url);
+                var response = await client.GetAsync(url);
+
+                switch(response.StatusCode)
+                {
+                    case System.Net.HttpStatusCode.OK:
+                        string content = await response.Content.ReadAsStringAsync();
+                        return JsonConvert.DeserializeObject<TType>(content);
+                    default:
+                        throw new Exception($"There was an error executing the request, status code {response.StatusCode}");
+                }
             }
         }
 
