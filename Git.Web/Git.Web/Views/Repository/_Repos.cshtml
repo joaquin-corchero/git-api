@@ -1,8 +1,8 @@
 ﻿@model Git.Web.Data.SearchResult
 
-<h3>Number of repos found @Model.TotalCount @(Model.ImcompleteResults ? "Results incomplete" : "")</h3>
+<h3>Number of repos found @Model.Total_Count @(Model.ImcompleteResults ? "Results incomplete" : "")</h3>
 
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Owner name</th>
@@ -23,22 +23,12 @@
         {
             foreach (var item in Model.Items)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Owner.Login)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Url)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CreatedAt)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PushedAt)
-                    </td>
+                <tr class="repo-row">
+                    <td>@item.Owner.Login</td>
+                    <td>@item.Name</td>
+                    <td><a href="@item.Url" target="_blank">@item.Url</a></td>
+                    <td>@item.Created_At</td>
+                    <td>@item.Pushed_At</td>
                 </tr>
                 @Html.Partial("_Commits", item)
             }

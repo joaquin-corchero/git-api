@@ -16,11 +16,11 @@ namespace Git.Web.Data
 
         public string Url { get; set; }
 
-        public string CreatedAt { get; set; }
+        public DateTime Created_At { get; set; }
 
-        public string UpdatedAt { get; set; }
+        public DateTime Updated_At { get; set; }
 
-        public string PushedAt { get; set; }
+        public DateTime Pushed_At { get; set; }
 
         public string GitUrl { get; set; }
 
@@ -29,6 +29,8 @@ namespace Git.Web.Data
         public bool CouldRetriveCommits { get; private set; }
 
         public string ErrorMessage { get; private set; }
+
+        public GitRepo() { }
 
         internal void SetSuccess(List<GitCommit> commits)
         {

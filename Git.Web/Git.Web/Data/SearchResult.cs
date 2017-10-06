@@ -6,11 +6,14 @@ namespace Git.Web.Data
 {
     public class SearchResult
     {
-        public bool CouldRetrieveRepos { get; private set; }
-        public string ErrorMessage { get; private set; }
-        public int TotalCount { get; set; }
+        public int Total_Count { get; set; }
         public bool ImcompleteResults { get; set; }
         public IList<GitRepo> Items { get; set; }
+
+        public bool CouldRetrieveRepos { get; private set; }
+        public string ErrorMessage { get; private set; }
+
+        public SearchResult() { }
 
         internal void SetSuccess()
         {

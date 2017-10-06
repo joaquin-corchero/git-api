@@ -6,6 +6,8 @@ namespace Git.Web.Data
     {
         public string Sha { get; set; }
         public Commit Commit { get; set; }
+
+        public GitCommit() { }
     }
 
     public class Commit
@@ -15,6 +17,8 @@ namespace Git.Web.Data
         public string Message { get; set; }
 
         public string Url { get; set; }
+
+        public Commit() { }
     }
 
     public class Committer
@@ -24,5 +28,7 @@ namespace Git.Web.Data
         public string Email { get; set; }
 
         public string Date { get; set; }
+
+        public Committer() { }
     }
 }

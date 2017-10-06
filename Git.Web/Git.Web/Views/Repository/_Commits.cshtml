@@ -3,13 +3,13 @@
 @if (!Model.CouldRetriveCommits)
 {
     <tr>
-        <th><span class="alert alert-danger">@Model.ErrorMessage</span></th>
+        <th colspan="5"><p class="alert alert-danger">@Model.ErrorMessage</p></th>
     </tr>
 }
 else
 {
     <tr class="git-commit">
-        <th>CommiterName</th>
+        <th>Commiter Name</th>
         <th colspan="2">Message</th>
         <th>Sha</th>
         <th>Date</th>

@@ -34,7 +34,14 @@ body {
     }
 }
 
-.git-commit td, .git-commit th{
-    font-size: smaller;
+.git-commit th {
     background-color: #cccccc;
+}
+
+.git-commit{
+    font-size: smaller;
+}
+
+.repo-row{
+    font-weight: 600;
 }

@@ -87,7 +87,7 @@ namespace Git.Tests.Controllers
 
                 void SetupGitClient()
                 {
-                    _searchResults = new SearchResult{ TotalCount = 10 };
+                    _searchResults = new SearchResult{ Total_Count = 10 };
 
                     _gitClient.Setup(c => c.SearchAsync(_inputModel.SearchCriteria)).ReturnsAsync(_searchResults);
                 }
